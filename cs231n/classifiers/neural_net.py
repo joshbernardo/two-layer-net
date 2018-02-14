@@ -193,7 +193,10 @@ class TwoLayerNet(object):
       # using stochastic gradient descent. You'll need to use the gradients   #
       # stored in the grads dictionary defined above.                         #
       #########################################################################
-      
+      self.params['W1'] += -1 * learning_rate * grads['W1']
+      self.params['W2'] += -1 * learning_rate * grads['W2']
+      self.params['b1'] += -1 * learning_rate * grads['b1']
+      self.params['b2'] += -1 * learning_rate * grads['b2']
       #########################################################################
       #                             END OF YOUR CODE                          #
       #########################################################################
@@ -238,7 +241,13 @@ class TwoLayerNet(object):
     ###########################################################################
     # TODO: Implement this function; it should be VERY simple!                #
     ###########################################################################
-    pass
+    scores_w1 = np.dot(X, self.params['W1'])
+    scores_w2 = np.dot(X, self.params['W2'])
+
+    y_pred_w1 = scores_w1.argmax(axis=1)
+    
+    scores = np.dot(X, self.W)
+    y_pred = scores.argmax(axis=1)
     ###########################################################################
     #                              END OF YOUR CODE                           #
     ###########################################################################
