@@ -148,7 +148,8 @@ class TwoLayerNet(object):
       # TODO: Create a random minibatch of training data and labels, storing  #
       # them in X_batch and y_batch respectively.                             #
       #########################################################################
-      pass
+      hidden_layer = np.maximum(0, np.dot(X, W1) + b1) # ReLU activation
+      scores = np.dot(hidden_layer, W2) + b2
       #########################################################################
       #                             END OF YOUR CODE                          #
       #########################################################################
@@ -163,7 +164,15 @@ class TwoLayerNet(object):
       # using stochastic gradient descent. You'll need to use the gradients   #
       # stored in the grads dictionary defined above.                         #
       #########################################################################
-      pass
+      # compute the class probabilities
+      exp_scores = np.exp(scores)
+      probs = exp_scores / np.sum(exp_scores, axis=1, keepdims=True) # [N x K]
+
+      # average cross-entropy loss and regularization
+      corect_logprobs = -np.log(probs[range(N),y])
+      data_loss = np.sum(corect_logprobs)/N
+      reg_loss = 0.5*reg*np.sum(W1*W1) + 0.5*reg*np.sum(W2*W2)
+      loss = data_loss + reg_loss
       #########################################################################
       #                             END OF YOUR CODE                          #
       #########################################################################
@@ -208,11 +217,26 @@ class TwoLayerNet(object):
     ###########################################################################
     # TODO: Implement this function; it should be VERY simple!                #
     ###########################################################################
-    pass
+    # compute the gradient on scores
+    dscores = probs
+    dscores[range(N),y] -= 1
+    dscores /= N
+
+    # W2 and b2
+    grads['W2'] = np.dot(hidden_layer.T, dscores)
+    grads['b2'] = np.sum(dscores, axis=0)
+    # next backprop into hidden layer
+    dhidden = np.dot(dscores, W2.T)
+    dhidden[hidden_layer <= 0] = 0
+    # finally into W,b
+    grads['W1'] = np.dot(X.T, dhidden)
+    grads['b1'] = np.sum(dhidden, axis=0)
+
+    # add regularization gradient contribution
+    grads['W2'] += reg * W2
+    grads['W1'] += reg * W1
     ###########################################################################
     #                              END OF YOUR CODE                           #
     ###########################################################################
 
     return y_pred
-
-
