@@ -227,6 +227,10 @@ class TwoLayerNet(object):
     data points. For each data point we predict scores for each of the C
     classes, and assign each data point to the class with the highest score.
 
+    X.shape = (200, 4)
+    self.params['W1'].shape = (4, 10)
+    self.params['W2'].shape = (10, 3)
+
     Inputs:
     - X: A numpy array of shape (N, D) giving N D-dimensional data points to
       classify.
@@ -242,12 +246,9 @@ class TwoLayerNet(object):
     # TODO: Implement this function; it should be VERY simple!                #
     ###########################################################################
     scores_w1 = np.dot(X, self.params['W1'])
-    scores_w2 = np.dot(X, self.params['W2'])
+    scores_w2 = np.dot(scores_w1, self.params['W2'])
 
-    y_pred_w1 = scores_w1.argmax(axis=1)
-    
-    scores = np.dot(X, self.W)
-    y_pred = scores.argmax(axis=1)
+    y_pred = scores_w1.argmax(axis=1)
     ###########################################################################
     #                              END OF YOUR CODE                           #
     ###########################################################################
