@@ -245,10 +245,12 @@ class TwoLayerNet(object):
     ###########################################################################
     # TODO: Implement this function; it should be VERY simple!                #
     ###########################################################################
-    scores_w1 = np.dot(X, self.params['W1'])
-    scores_w2 = np.dot(scores_w1, self.params['W2'])
-
-    y_pred = scores_w1.argmax(axis=1)
+    X1 = np.maximum(X.dot(self.params['W1']) + self.params['b1'], 0)
+    X2 = X1.dot(self.params['W2']) + self.params['b2']
+    exp_X2 = pow(math.e, X2)
+    scores = (exp_X2.T/np.sum(exp_X2, axis=1)).T
+    
+    y_pred = np.argmax(scores, axis=1)
     ###########################################################################
     #                              END OF YOUR CODE                           #
     ###########################################################################
